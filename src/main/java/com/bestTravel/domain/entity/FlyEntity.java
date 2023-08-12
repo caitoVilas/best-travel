@@ -2,10 +2,7 @@ package com.bestTravel.domain.entity;
 
 import com.bestTravel.util.Aeroline;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -36,6 +33,8 @@ public class FlyEntity {
     private String destinyName;
     @Enumerated(EnumType.STRING)
     private Aeroline aeroline;
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "fly", cascade = CascadeType.ALL,
                fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<TicketEntity> tickets;
