@@ -1,8 +1,6 @@
 package com.bestTravel.domain.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,4 +28,7 @@ public class TicketEntity {
     private LocalDate arrivalDate;
     private LocalDate purchaseDate;
     private BigDecimal price;
+    @ManyToOne
+    @JoinColumn(name = "fly_id")
+    private FlyEntity fly;
 }
