@@ -31,4 +31,7 @@ public class ReservationEntity {
     private LocalDate dateEnd;
     private Integer totalDays;
     private BigDecimal price;
+    @ManyToOne
+    @JoinColumn(name = "hotel_id")
+    private HotelEntity hotel;
 }
