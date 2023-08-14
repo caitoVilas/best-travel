@@ -32,7 +32,7 @@ public class FlyEntity {
     @Column(length = 20)
     private String destinyName;
     @Enumerated(EnumType.STRING)
-    private Aeroline aeroline;
+    private Aeroline aeroLine;
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "fly", cascade = CascadeType.ALL,

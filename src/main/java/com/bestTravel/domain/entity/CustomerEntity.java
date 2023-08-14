@@ -26,7 +26,7 @@ public class CustomerEntity {
     @Column(length = 12)
     private String phoneNumber;
     private Integer totalFlights;
-    private Integer toalLodgings;
+    private Integer totalLodgings;
     private Integer totalTours;
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
