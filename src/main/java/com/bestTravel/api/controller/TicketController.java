@@ -8,6 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -41,5 +45,11 @@ public class TicketController {
         log.info("#### endpoint eliminar ticket por id");
         ticketService.delete(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/price/{idFly}")
+    public ResponseEntity<Map<String, BigDecimal>> viewPrice(@PathVariable Long idFly){
+        log.info("#### endpoint consultar precio ticket");
+        return ResponseEntity.ok(Collections.singletonMap("Precio",ticketService.findPrice(idFly)));
     }
 }
