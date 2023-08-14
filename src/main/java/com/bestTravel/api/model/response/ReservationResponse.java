@@ -1,6 +1,5 @@
 package com.bestTravel.api.model.response;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
