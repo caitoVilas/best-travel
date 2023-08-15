@@ -47,7 +47,7 @@ public class FlyController {
     @GetMapping("/price-between")
     public ResponseEntity<Set<FlyResponse>> getflyBetweenPrice(@RequestParam BigDecimal min,
                                                                @RequestParam BigDecimal max){
-        log.info("#### endpoint buscar vuelos entre origen y destino");
+        log.info("#### endpoint buscar vuelos entre precios");
         var response = flyService.readBetweenPrice(min, max);
         return response.isEmpty()?ResponseEntity.noContent().build():
                 ResponseEntity.ok(response);
