@@ -8,6 +8,7 @@ import com.bestTravel.domain.repository.CustomerRepository;
 import com.bestTravel.domain.repository.FlyRepository;
 import com.bestTravel.domain.repository.TicketRepository;
 import com.bestTravel.infrastructure.abstract_services.TicketService;
+import com.bestTravel.infrastructure.helpers.CustomerHelper;
 import com.bestTravel.util.BestTravelUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,8 +34,9 @@ public class TicketServiceImpl implements TicketService {
     private final FlyRepository flyRepository;
     private final CustomerRepository customerRepository;
     private final TicketRepository ticketRepository;
+    private final CustomerHelper customerHelper;
 
-    private static final BigDecimal CHARGER_PRICE_PERCENTAGE = BigDecimal.valueOf(0.25);
+    public static final BigDecimal CHARGER_PRICE_PERCENTAGE = BigDecimal.valueOf(0.25);
 
     @Override
     public TicketResponse create(TicketRequest request) {
@@ -54,6 +56,7 @@ public class TicketServiceImpl implements TicketService {
                 .departureDate(BestTravelUtil.getRandomSoom())
                 .build();
         var ticket = ticketRepository.save(ticketPersist);
+        customerHelper.incrase(customer.getDni(), TicketService.class);
         log.info("--> guardado ticket id {}", ticket.getId());
         log.info("---> finalizado servicio guardar ticket");
         return this.mapToDTO(ticket);
