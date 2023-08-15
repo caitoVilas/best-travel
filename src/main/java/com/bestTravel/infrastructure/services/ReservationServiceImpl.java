@@ -8,6 +8,7 @@ import com.bestTravel.domain.repository.CustomerRepository;
 import com.bestTravel.domain.repository.HotelRepository;
 import com.bestTravel.domain.repository.ReservationRepository;
 import com.bestTravel.infrastructure.abstract_services.ReservationService;
+import com.bestTravel.infrastructure.helpers.CustomerHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -32,8 +33,9 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final HotelRepository hotelRepository;
     private final CustomerRepository customerRepository;
+    private final CustomerHelper customerHelper;
 
-    private static final BigDecimal CHARGES_PRICE_PERCENTAGE = BigDecimal.valueOf(0.20);
+    public static final BigDecimal CHARGES_PRICE_PERCENTAGE = BigDecimal.valueOf(0.20);
 
     @Override
     public ReservationResponse create(ReservationRequest request) {
@@ -54,6 +56,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .build();
         log.info("---> guardando reservacion...");
         var reservationNew = reservationRepository.save(reservation);
+        customerHelper.incrase(customer.getDni(), ReservationService.class);
         log.info("---> finalizado servicio guardar reservacion");
         return this.mapToDto(reservationNew);
     }
