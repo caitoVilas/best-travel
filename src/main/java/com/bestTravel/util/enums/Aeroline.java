@@ -1,4 +1,4 @@
-package com.bestTravel.util;
+package com.bestTravel.util.enums;
 
 public enum Aeroline {
     aero_gold,

@@ -1,6 +1,6 @@
 package com.bestTravel.api.model.response;
 
-import com.bestTravel.util.Aeroline;
+import com.bestTravel.util.enums.Aeroline;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

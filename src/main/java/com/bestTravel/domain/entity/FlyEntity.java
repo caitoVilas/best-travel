@@ -1,6 +1,6 @@
 package com.bestTravel.domain.entity;
 
-import com.bestTravel.util.Aeroline;
+import com.bestTravel.util.enums.Aeroline;
 import jakarta.persistence.*;
 import lombok.*;
 
