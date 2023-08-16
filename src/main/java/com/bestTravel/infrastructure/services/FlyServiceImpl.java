@@ -4,7 +4,7 @@ import com.bestTravel.api.model.response.FlyResponse;
 import com.bestTravel.domain.entity.FlyEntity;
 import com.bestTravel.domain.repository.FlyRepository;
 import com.bestTravel.infrastructure.abstract_services.FlyService;
-import com.bestTravel.util.SortType;
+import com.bestTravel.util.enums.SortType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;

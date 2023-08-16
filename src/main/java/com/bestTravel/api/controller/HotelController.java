@@ -2,7 +2,7 @@ package com.bestTravel.api.controller;
 
 import com.bestTravel.api.model.response.HotelResponse;
 import com.bestTravel.infrastructure.abstract_services.HotelService;
-import com.bestTravel.util.SortType;
+import com.bestTravel.util.enums.SortType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

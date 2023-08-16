@@ -8,8 +8,11 @@ import com.bestTravel.domain.repository.CustomerRepository;
 import com.bestTravel.domain.repository.FlyRepository;
 import com.bestTravel.domain.repository.TicketRepository;
 import com.bestTravel.infrastructure.abstract_services.TicketService;
+import com.bestTravel.infrastructure.helpers.BlackListHelper;
 import com.bestTravel.infrastructure.helpers.CustomerHelper;
 import com.bestTravel.util.BestTravelUtil;
+import com.bestTravel.util.enums.Tables;
+import com.bestTravel.util.exception.IdNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -35,6 +38,8 @@ public class TicketServiceImpl implements TicketService {
     private final CustomerRepository customerRepository;
     private final TicketRepository ticketRepository;
     private final CustomerHelper customerHelper;
+    private final BlackListHelper blackListHelper;
+
 
     public static final BigDecimal CHARGER_PRICE_PERCENTAGE = BigDecimal.valueOf(0.25);
 
@@ -42,9 +47,12 @@ public class TicketServiceImpl implements TicketService {
     public TicketResponse create(TicketRequest request) {
         log.info("---> inicio servicio crear ticket");
         log.info("---> buscando vuelo...");
-        var fly = flyRepository.findById(request.getIdFly()).orElseThrow();
+        blackListHelper.isInBlackListCustomer(request.getIdClient());
+        var fly = flyRepository.findById(request.getIdFly())
+                .orElseThrow(() -> new  IdNotFoundException(Tables.fly.name()));
         log.info("---> buscando cliente...");
-        var customer = customerRepository.findById(request.getIdClient()).orElseThrow();
+        var customer = customerRepository.findById(request.getIdClient())
+                .orElseThrow(()-> new IdNotFoundException(Tables.customer.name()));
         log.info("---> guardando ticket...");
         var ticketPersist = TicketEntity.builder()
                 .id(UUID.randomUUID())
@@ -66,7 +74,8 @@ public class TicketServiceImpl implements TicketService {
     public TicketResponse read(UUID uuid) {
         log.info("---> inicio servicio buscar ticket por id");
         log.info("---> buscando ticket con id: {}", uuid);
-        var ticket = ticketRepository.findById(uuid).orElseThrow();
+        var ticket = ticketRepository.findById(uuid)
+                .orElseThrow(()-> new IdNotFoundException(Tables.ticket.name()));
         log.info("---> finalizado servicio buscar ticket");
         return mapToDTO(ticket);
     }
@@ -75,8 +84,10 @@ public class TicketServiceImpl implements TicketService {
     public TicketResponse update(TicketRequest request, UUID uuid) {
         log.info("---> inicio servicio actualizar ticket");
         log.info("---> buscando ticket con id: {}", uuid);
-        var tickeBase = ticketRepository.findById(uuid).orElseThrow();
-        var fly = flyRepository.findById(request.getIdFly()).orElseThrow();
+        var tickeBase = ticketRepository.findById(uuid)
+                .orElseThrow(()-> new IdNotFoundException(Tables.ticket.name()));
+        var fly = flyRepository.findById(request.getIdFly())
+                .orElseThrow(()-> new IdNotFoundException(Tables.fly.name()));
         log.info("---> actualizando ticket");
         tickeBase.setFly(fly);
         tickeBase.setPrice(fly.getPrice().add(fly.getPrice().multiply(CHARGER_PRICE_PERCENTAGE)));
@@ -91,7 +102,8 @@ public class TicketServiceImpl implements TicketService {
     public void delete(UUID uuid) {
         log.info("---> inicio servicio eliminar ticket");
         log.info("---> buscando ticket con id {}", uuid);
-        ticketRepository.findById(uuid).orElseThrow();
+        ticketRepository.findById(uuid)
+                .orElseThrow(()-> new IdNotFoundException(Tables.ticket.name()));
         log.info("---> eliminando ticket con id {}", uuid);
         ticketRepository.deleteById(uuid);
         log.info("---> finalizado servicio eliminar ticket");
@@ -101,7 +113,8 @@ public class TicketServiceImpl implements TicketService {
     public BigDecimal findPrice(Long idFly) {
         log.info("---> inicio servicio obtener precio de ticket");
         log.info("---> obteniendo vuelo...");
-        var fly = flyRepository.findById(idFly).orElseThrow();
+        var fly = flyRepository.findById(idFly)
+                .orElseThrow(()-> new IdNotFoundException(Tables.fly.name()));
         log.info("---> finalizado servicio obtener precio de ticket");
         return fly.getPrice().add(fly.getPrice().multiply(CHARGER_PRICE_PERCENTAGE));
     }

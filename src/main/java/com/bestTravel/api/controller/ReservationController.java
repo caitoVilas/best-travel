@@ -3,6 +3,7 @@ package com.bestTravel.api.controller;
 import com.bestTravel.api.model.request.ReservationRequest;
 import com.bestTravel.api.model.response.ReservationResponse;
 import com.bestTravel.infrastructure.abstract_services.ReservationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping
-    public ResponseEntity<ReservationResponse> create(@RequestBody ReservationRequest request){
+    public ResponseEntity<ReservationResponse> create(@Valid @RequestBody ReservationRequest request){
         log.info("#### endpoint creacion de reservaciones");
         return ResponseEntity.ok(reservationService.create(request));
     }
@@ -33,7 +34,7 @@ public class ReservationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ReservationResponse> update(@PathVariable UUID id,
+    public ResponseEntity<ReservationResponse> update(@Valid @PathVariable UUID id,
                                                       @RequestBody ReservationRequest request){
         log.info("#### endpoint actualizar reservacion");
         return ResponseEntity.ok(reservationService.update(request, id));
