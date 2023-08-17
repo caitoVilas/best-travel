@@ -10,6 +10,7 @@ import com.bestTravel.domain.repository.TicketRepository;
 import com.bestTravel.infrastructure.abstract_services.TicketService;
 import com.bestTravel.infrastructure.helpers.BlackListHelper;
 import com.bestTravel.infrastructure.helpers.CustomerHelper;
+import com.bestTravel.infrastructure.helpers.EmailHelper;
 import com.bestTravel.util.BestTravelUtil;
 import com.bestTravel.util.enums.Tables;
 import com.bestTravel.util.exception.IdNotFoundException;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -39,6 +41,7 @@ public class TicketServiceImpl implements TicketService {
     private final TicketRepository ticketRepository;
     private final CustomerHelper customerHelper;
     private final BlackListHelper blackListHelper;
+    private final EmailHelper emailHelper;
 
 
     public static final BigDecimal CHARGER_PRICE_PERCENTAGE = BigDecimal.valueOf(0.25);
@@ -65,6 +68,8 @@ public class TicketServiceImpl implements TicketService {
                 .build();
         var ticket = ticketRepository.save(ticketPersist);
         customerHelper.incrase(customer.getDni(), TicketService.class);
+        if (Objects.nonNull(request.getEmail())) emailHelper.sendMail(request.getEmail(),
+                customer.getFullName(), Tables.ticket.name());
         log.info("--> guardado ticket id {}", ticket.getId());
         log.info("---> finalizado servicio guardar ticket");
         return this.mapToDTO(ticket);

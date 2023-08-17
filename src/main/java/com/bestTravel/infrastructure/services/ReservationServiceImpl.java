@@ -11,6 +11,7 @@ import com.bestTravel.infrastructure.abstract_services.ReservationService;
 import com.bestTravel.infrastructure.helpers.ApiCurrencyConectorHelper;
 import com.bestTravel.infrastructure.helpers.BlackListHelper;
 import com.bestTravel.infrastructure.helpers.CustomerHelper;
+import com.bestTravel.infrastructure.helpers.EmailHelper;
 import com.bestTravel.util.enums.Tables;
 import com.bestTravel.util.exception.IdNotFoundException;
 import jakarta.persistence.Table;
@@ -24,6 +25,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Currency;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -42,6 +44,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final CustomerHelper customerHelper;
     private final BlackListHelper blackListHelper;
     private final ApiCurrencyConectorHelper apiCurrencyConectorHelper;
+    private final EmailHelper emailHelper;
 
     public static final BigDecimal CHARGES_PRICE_PERCENTAGE = BigDecimal.valueOf(0.20);
 
@@ -68,6 +71,8 @@ public class ReservationServiceImpl implements ReservationService {
         log.info("---> guardando reservacion...");
         var reservationNew = reservationRepository.save(reservation);
         customerHelper.incrase(customer.getDni(), ReservationService.class);
+        if (Objects.nonNull(request.getEmail())) emailHelper.sendMail(request.getEmail(),
+                customer.getFullName(),Tables.reservation.name());
         log.info("---> finalizado servicio guardar reservacion");
         return this.mapToDto(reservationNew);
     }
