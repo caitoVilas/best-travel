@@ -1,5 +1,6 @@
 package com.bestTravel.api.model.request;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -27,4 +28,6 @@ public class TourRequest implements Serializable {
     private Set<TourFlyRequest> flights;
     @Size(min = 1, message = "min hotel tour per tour")
     private Set<TourHotelRequest> hotels;
+    @Email(message = "invalid email")
+    private String email;
 }

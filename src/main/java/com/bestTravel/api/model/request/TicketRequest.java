@@ -1,9 +1,6 @@
 package com.bestTravel.api.model.request;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,4 +24,6 @@ public class TicketRequest implements Serializable {
     @Positive
     @NotNull(message = "id flight is mandatory")
     private Long idFly;
+    @Email(message = "invalid email")
+    private String email;
 }
