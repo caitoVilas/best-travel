@@ -14,9 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/reservations")
@@ -67,11 +65,13 @@ public class ReservationController {
     }
 
     @GetMapping("/price/{hotelId}")
-    @Operation(summary = "muestra el precio de un hotel por si id",
-            description = "muestra el precio de un hotel por si id")
+    @Operation(summary = "muestra el precio de un hotel por el id",
+            description = "muestra el precio de un hotel por el id")
     @Parameter(name = "hotelId", description = "id del hotel")
-    public ResponseEntity<Map<String, BigDecimal>> viewPrice(@PathVariable Long hotelId){
+    public ResponseEntity<Map<String, BigDecimal>> viewPrice(@PathVariable Long hotelId,
+                                                             @RequestHeader(required = false) Currency currency){
         log.info("#### endpoint ver precio de reservacion por id de hotel");
-        return ResponseEntity.ok(Collections.singletonMap("Precio", reservationService.findPrice(hotelId)));
+        if (Objects.isNull(currency)) currency = Currency.getInstance("USD");
+        return ResponseEntity.ok(Collections.singletonMap("Precio", reservationService.findPrice(hotelId, currency)));
     }
 }
