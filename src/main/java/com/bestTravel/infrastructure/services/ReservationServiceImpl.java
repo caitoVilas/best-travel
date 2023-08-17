@@ -8,6 +8,7 @@ import com.bestTravel.domain.repository.CustomerRepository;
 import com.bestTravel.domain.repository.HotelRepository;
 import com.bestTravel.domain.repository.ReservationRepository;
 import com.bestTravel.infrastructure.abstract_services.ReservationService;
+import com.bestTravel.infrastructure.helpers.ApiCurrencyConectorHelper;
 import com.bestTravel.infrastructure.helpers.BlackListHelper;
 import com.bestTravel.infrastructure.helpers.CustomerHelper;
 import com.bestTravel.util.enums.Tables;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Currency;
 import java.util.UUID;
 
 /**
@@ -39,6 +41,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final CustomerRepository customerRepository;
     private final CustomerHelper customerHelper;
     private final BlackListHelper blackListHelper;
+    private final ApiCurrencyConectorHelper apiCurrencyConectorHelper;
 
     public static final BigDecimal CHARGES_PRICE_PERCENTAGE = BigDecimal.valueOf(0.20);
 
@@ -113,13 +116,17 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public BigDecimal findPrice(Long idHotel) {
+    public BigDecimal findPrice(Long idHotel, Currency currency) {
         log.info("---> inicio servicio buscar precio reservacion");
         log.info("---> buscando hotel {}", idHotel);
         var hotel = hotelRepository.findById(idHotel)
                 .orElseThrow(()-> new IdNotFoundException(Tables.hotel.name()));
+        var priceInDolar = hotel.getPrice().add(hotel.getPrice().multiply(CHARGES_PRICE_PERCENTAGE));
+        if (currency.equals(Currency.getInstance("USD"))) return priceInDolar;
+        var currencyDto = apiCurrencyConectorHelper.getCurrency(currency);
+        log.info("---> API  currency in {}, response {}",currencyDto.getExchangeDate().toString(), currencyDto.getRates());
         log.info("---> finalizado servicio buscar precio reservacion");
-        return hotel.getPrice().add(hotel.getPrice().multiply(CHARGES_PRICE_PERCENTAGE));
+        return priceInDolar.multiply(currencyDto.getRates().get(currency));
     }
 
     private ReservationResponse mapToDto(ReservationEntity reservation){

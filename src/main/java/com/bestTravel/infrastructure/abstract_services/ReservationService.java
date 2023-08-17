@@ -4,6 +4,7 @@ import com.bestTravel.api.model.request.ReservationRequest;
 import com.bestTravel.api.model.response.ReservationResponse;
 
 import java.math.BigDecimal;
+import java.util.Currency;
 import java.util.UUID;
 
 /**
@@ -12,5 +13,5 @@ import java.util.UUID;
  */
 
 public interface ReservationService extends CrudServices<ReservationRequest, ReservationResponse, UUID> {
-    BigDecimal findPrice(Long idHotel);
+    BigDecimal findPrice(Long idHotel, Currency currency);
 }
