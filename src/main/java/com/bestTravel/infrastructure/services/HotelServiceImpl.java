@@ -4,10 +4,12 @@ import com.bestTravel.api.model.response.HotelResponse;
 import com.bestTravel.domain.entity.HotelEntity;
 import com.bestTravel.domain.repository.HotelRepository;
 import com.bestTravel.infrastructure.abstract_services.HotelService;
+import com.bestTravel.util.constants.CacheConstants;
 import com.bestTravel.util.enums.SortType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -32,6 +34,7 @@ public class HotelServiceImpl implements HotelService {
 
 
     @Override
+    @Cacheable(value = CacheConstants.HOTEL_CACHE_NAME)
     public Page<HotelResponse> getAll(Integer page, Integer size, SortType sortType) {
         log.info("---> inicio servicio obtener hoteles paginados y ordenados");
         PageRequest pageRequest = null;
@@ -46,15 +49,22 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
+    @Cacheable(value = CacheConstants.HOTEL_CACHE_NAME)
     public Set<HotelResponse> readLesPrice(BigDecimal price) {
         log.info("---> inicio servicio buscar hoteles por precio menor {}", price);
         log.info("---> buscando hoteles...");
         log.info("---> finalizado servicio buscar hoteles por precio menor");
+        try {
+            Thread.sleep(7000);
+        }catch (InterruptedException e){
+            throw new RuntimeException();
+        }
         return hotelRepository.findByPriceLessThan(price)
                 .stream().map(this::mapToDto).collect(Collectors.toSet());
     }
 
     @Override
+    @Cacheable(value = CacheConstants.HOTEL_CACHE_NAME)
     public Set<HotelResponse> readBetweenPrice(BigDecimal min, BigDecimal max) {
         log.info("---> inicio servicio buscar hoteles entre precios {} y {}", min, max);
         log.info("---> buscando hoteles...");
@@ -64,6 +74,7 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
+    @Cacheable(value = CacheConstants.HOTEL_CACHE_NAME)
     public Set<HotelResponse> readGreaterThan(Integer rating) {
         log.info("---> inicio servicio buscar hotel con rating mayor a {}", rating);
         log.info("---> buscando hoteles...");
