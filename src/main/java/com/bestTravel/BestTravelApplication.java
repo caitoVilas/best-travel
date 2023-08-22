@@ -1,5 +1,6 @@
 package com.bestTravel;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -9,5 +10,4 @@ public class BestTravelApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BestTravelApplication.class, args);
 	}
-
 }
