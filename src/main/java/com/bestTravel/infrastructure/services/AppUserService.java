@@ -1,5 +1,6 @@
 package com.bestTravel.infrastructure.services;
 
+import com.bestTravel.domain.entity.AppUserEntity;
 import com.bestTravel.domain.entity.Role;
 import com.bestTravel.domain.repository.AppUserRepository;
 import com.bestTravel.domain.repository.RolRepository;
@@ -9,13 +10,17 @@ import com.bestTravel.util.enums.Tables;
 import com.bestTravel.util.exception.UserNameNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author claudio.vilas
@@ -26,7 +31,7 @@ import java.util.Map;
 @Slf4j
 @Transactional
 @RequiredArgsConstructor
-public class AppUserService implements ModifyUserService {
+public class AppUserService implements ModifyUserService, UserDetailsService {
     private final AppUserRepository appUserRepository;
     private final RolRepository repository;
 
@@ -85,5 +90,22 @@ public class AppUserService implements ModifyUserService {
         List<String> rolesNuevos = new ArrayList<>();
         userSaved.getRole().forEach(r -> rolesNuevos.add(r.getGrantedAuthorities().toString()));
         return Collections.singletonMap(userSaved.getUsername(), rolesNuevos);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        var user = appUserRepository.findByUsername(username)
+                .orElseThrow(() ->new UsernameNotFoundException(Tables.users.name()));
+        return mapUser(user);
+    }
+
+    private static UserDetails mapUser(AppUserEntity user){
+        Set<GrantedAuthority> authorities = user.getRole()
+                .stream()
+                .map(rol -> new SimpleGrantedAuthority(rol.getGrantedAuthorities().toString()))
+                .collect(Collectors.toSet());
+        return new User(user.getUsername(), user.getPassword(), user.isEnabled(), true, true,
+                true, authorities);
+
     }
 }
