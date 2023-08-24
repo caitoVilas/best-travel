@@ -2,6 +2,7 @@ package com.bestTravel.api.controller;
 
 import com.bestTravel.api.model.response.FlyResponse;
 import com.bestTravel.infrastructure.abstract_services.FlyService;
+import com.bestTravel.util.annotations.Notify;
 import com.bestTravel.util.enums.SortType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -31,6 +32,7 @@ public class FlyController {
     private final FlyService flyService;
 
     @GetMapping
+    @Notify
     @Operation(summary = "Muestra los vuelos paginados y ordenados",
                description = "Muestra los vuelos paginados y ordenados")
     @Parameters({
